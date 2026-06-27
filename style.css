@@ -1,0 +1,371 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Press Start 2P', cursive;
+    user-select: none;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- HUD --- */
+/* --- HUD (DOOM STATUS BAR) --- */
+#hud {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: #3a3a3a;
+    border-top: 6px double #6e6e6e;
+    box-shadow: inset 0 4px 0 #1b1b1b, 0 -6px 10px rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.stat-box {
+    background: #141414;
+    padding: 8px 15px;
+    border: 4px inset #555;
+    color: #ff3333;
+    text-shadow: 0px 0px 4px rgba(255, 0, 0, 0.7);
+    text-align: center;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #a8a8a8;
+    margin-bottom: 4px;
+    display: block;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px #000;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: bold;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.stat-type {
+    font-size: 9px;
+    color: #ffd700;
+    margin-top: 4px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px #000;
+}
+
+/* Face Frame */
+#face-container {
+    width: 72px;
+    height: 84px;
+    background: #252525;
+    border: 4px outset #6e6e6e;
+    box-shadow: inset 0 0 10px #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#face-canvas {
+    width: 48px;
+    height: 56px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* Keys Bar */
+#keys-box {
+    min-width: 110px;
+}
+
+.keys-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.key-card {
+    width: 16px;
+    height: 24px;
+    background: #333;
+    border: 2px solid #222;
+    border-radius: 2px;
+    box-shadow: inset 0 0 3px #000;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.red-key.active {
+    background: #ff2222;
+    border-color: #ffaaaa;
+    box-shadow: 0 0 8px #ff2222;
+}
+
+.blue-key.active {
+    background: #2222ff;
+    border-color: #aaaaff;
+    box-shadow: 0 0 8px #2222ff;
+}
+
+.yellow-key.active {
+    background: #ffff22;
+    border-color: #ffffff;
+    box-shadow: 0 0 8px #ffff22;
+}
+
+/* --- MINIMAP --- */
+#minimap-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 150px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 4px double #888;
+    z-index: 15;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+}
+
+#minimap {
+    width: 100%;
+    height: 100%;
+}
+
+/* --- WEAPON (SPRITE) --- */
+#weapon-container {
+    position: absolute;
+    bottom: 120px; /* Sit right above 120px HUD */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    height: 320px;
+    pointer-events: none;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#weapon-img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    object-fit: contain;
+    transform-origin: bottom center;
+}
+
+/* Muzzle Flash */
+#flash {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #fff 15%, #ff3300 45%, transparent 75%);
+    border-radius: 50%;
+    display: none;
+    opacity: 0.95;
+    z-index: 6;
+    mix-blend-mode: screen;
+}
+
+/* --- OVERLAYS --- */
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #00ff00;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 0 6px #00ff00;
+}
+
+#damage-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(180, 0, 0, 0.65);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 8;
+    transition: opacity 0.1s ease-out;
+}
+
+#item-flash {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(220, 180, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 7;
+    transition: opacity 0.1s ease-out;
+}
+
+#start-screen, #game-over, #level-win {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    color: white;
+    text-align: center;
+}
+
+h1 { 
+    font-size: 50px; 
+    color: #ff2222; 
+    text-shadow: 4px 4px #000; 
+    margin-bottom: 20px; 
+    letter-spacing: 2px;
+}
+p { 
+    font-size: 14px; 
+    line-height: 2; 
+    color: #c5c5c5; 
+}
+.btn {
+    margin-top: 30px;
+    padding: 15px 30px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 18px;
+    background: #cc2222;
+    color: white;
+    border: 4px outset #888;
+    cursor: pointer;
+    text-shadow: 2px 2px #000;
+    box-shadow: 0 6px 0 #660000, 0 8px 10px rgba(0,0,0,0.5);
+    transition: all 0.1s;
+}
+.btn:hover { 
+    background: #ff2222;
+    transform: translateY(2px);
+    box-shadow: 0 4px 0 #660000, 0 6px 8px rgba(0,0,0,0.5);
+}
+.btn:active {
+    transform: translateY(6px);
+    box-shadow: none;
+    border-style: inset;
+}
+
+.upload-container {
+    margin-top: 25px;
+    padding: 15px;
+    background: #1b1b1b;
+    border: 3px double #444;
+    border-radius: 4px;
+    text-align: center;
+}
+.upload-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: #888;
+}
+input[type="file"] {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: #fff;
+    cursor: pointer;
+}
+
+#game-over, #level-win { display: none; }
+#start-screen.hidden { display: none !important; }
+
+/* --- VIBRANT LEVEL & BOSS HUDS --- */
+#level-hud {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(10, 10, 15, 0.85);
+    border: 3px double #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    padding: 12px;
+    border-radius: 4px;
+    z-index: 15;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#level-num {
+    font-size: 11px;
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
+    margin-bottom: 6px;
+}
+
+#level-objective {
+    font-size: 8px;
+    color: #ffd700;
+    text-shadow: 0 0 3px rgba(255, 215, 0, 0.6);
+}
+
+#boss-hud {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
+    background: rgba(20, 5, 5, 0.9);
+    border: 3px double #ff2222;
+    box-shadow: 0 0 15px rgba(255, 34, 34, 0.5);
+    padding: 10px 15px;
+    border-radius: 6px;
+    z-index: 15;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#boss-name {
+    font-size: 10px;
+    color: #ff3333;
+    text-shadow: 0 0 8px rgba(255, 51, 51, 0.8);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+#boss-health-container {
+    width: 100%;
+    height: 14px;
+    background: #111;
+    border: 2px solid #555;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+#boss-health-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ff5555);
+    box-shadow: 0 0 8px #ff0000;
+    transition: width 0.1s ease-out;
+}

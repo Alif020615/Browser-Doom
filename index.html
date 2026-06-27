@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BROWSER DOOM - CUSTOM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- UI LAYERS -->
+    <div id="game-container">
+        <div id="damage-overlay"></div>
+        <div id="crosshair"></div>
+        
+        <div id="minimap-container">
+            <canvas id="minimap" width="150" height="150"></canvas>
+        </div>
+
+        <!-- LEVEL OBJECTIVE HUD -->
+        <div id="level-hud">
+            <span id="level-num">LEVEL 1: WASTELAND</span>
+            <span id="level-objective">Eliminate 8 Soldier Demons to open portal</span>
+        </div>
+
+        <!-- BOSS HUD -->
+        <div id="boss-hud">
+            <span id="boss-name">CYBER-DEMON BOSS</span>
+            <div id="boss-health-container">
+                <div id="boss-health-bar"></div>
+            </div>
+        </div>
+
+        <div id="weapon-container">
+            <div id="flash"></div>
+            <img id="weapon-img" src="" alt="Gun">
+        </div>
+
+        <!-- DOOM STATUS BAR (HUD) -->
+        <div id="hud">
+            <div class="stat-box">
+                <span class="stat-label">AMMO</span>
+                <span class="stat-value" id="ammo-val">50</span>
+                <span class="stat-type" id="ammo-type">PIS</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">HEALTH</span>
+                <span class="stat-value" id="health-val">100%</span>
+            </div>
+            <div id="face-container">
+                <canvas id="face-canvas" width="48" height="56"></canvas>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">ARMOR</span>
+                <span class="stat-value" id="armor-val">0%</span>
+            </div>
+            <div class="stat-box" id="keys-box">
+                <span class="stat-label">KEYS</span>
+                <div class="keys-container">
+                    <span class="key-card red-key" id="red-key-card"></span>
+                    <span class="key-card blue-key" id="blue-key-card"></span>
+                    <span class="key-card yellow-key" id="yellow-key-card"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN OVERLAYS -->
+        <div id="item-flash"></div>
+
+        <div id="start-screen">
+            <h1 id="menu-title">DOOM.JS</h1>
+            <p>WASD to Move &bull; Mouse to Aim &bull; Click to Shoot</p>
+            <p style="color: #ff5555; font-size: 11px; margin-top: 5px;">E or Space to Open Doors/Use &bull; 1 to 4 to Change Weapons</p>
+            <p style="color: #888888; font-size: 9px; margin-top: 10px;">(Weapons: 1 Fist, 2 Pistol, 3 Shotgun, 4 Plasma)</p>
+            
+            <div class="upload-container">
+                <span class="upload-label">UPLOAD CUSTOM ENEMY FACE (Optional):</span>
+                <input type="file" id="custom-enemy-input" accept="image/*">
+            </div>
+
+            <button class="btn" id="start-btn">ENTER HELL</button>
+        </div>
+
+        <div id="game-over">
+            <h1>YOU DIED</h1>
+            <p>The demons have consumed you.</p>
+            <button class="btn" onclick="location.reload()">RESPAWN</button>
+        </div>
+
+        <div id="level-win">
+            <h1 style="color: #55ff55;">LEVEL COMPLETED!</h1>
+            <p>You found the exit elevator and escaped hell.</p>
+            <button class="btn" onclick="location.reload()">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <!-- THREE.JS ENGINE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GAME LOGIC -->
+    <script src="script.js?v=8"></script>
+</body>
+</html>
