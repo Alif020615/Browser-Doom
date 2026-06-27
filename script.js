@@ -999,27 +999,27 @@ function generateLevelGrid(level) {
         grid[8][14] = 0; // bridge
         grid[22][14] = 0; // bridge
 
-        // Key rooms partitions
-        // Red room top-left
+        // Key rooms partitions (Doom-style progression chain)
+        // Red room top-left (contains Red key, locked behind standard door)
         for(let r=1; r<6; r++) grid[r][6] = 2;
         for(let c=1; c<6; c++) grid[6][c] = 2;
-        grid[6][3] = 5; // red locked door
+        grid[6][3] = 4; // standard door
 
-        // Blue room bottom-left
+        // Blue room bottom-left (contains Blue key, locked behind Red door)
         for(let r=size-7; r<size-1; r++) grid[r][6] = 2;
         for(let c=1; c<6; c++) grid[size-7][c] = 2;
-        grid[size-7][3] = 6; // blue locked door
+        grid[size-7][3] = 5; // red locked door
 
-        // Yellow room top-right
+        // Yellow room top-right (contains Yellow key, locked behind Blue door)
         for(let r=1; r<6; r++) grid[r][size-7] = 2;
         for(let c=size-7; c<size-1; c++) grid[6][c] = 2;
-        grid[6][size-4] = 7; // yellow locked door
+        grid[6][size-4] = 6; // blue locked door
 
-        // Central exit gate locked behind standard door
+        // Central exit gate (contains portal to Level 3, locked behind Yellow door)
         grid[size-6][size-6] = 2;
         grid[size-7][size-6] = 2;
         grid[size-6][size-7] = 2;
-        grid[size-6][size-6] = 4; // standard door
+        grid[size-6][size-6] = 7; // yellow locked door
         grid[size-4][size-4] = 9; // level portal
     } else if (level === 3) {
         // Colosseum ring
