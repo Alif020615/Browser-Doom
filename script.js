@@ -947,9 +947,14 @@ function loadLevel(levelNum) {
         spawnLevelEntities(3);
     }
 
-    // Move player back to starting spot
-    player.x = CELL_SIZE * 2.5;
-    player.z = CELL_SIZE * 2.5;
+    // Move player to level starting spot (centered for Level 3 Colosseum to avoid circular wall spawn)
+    if (levelNum === 3) {
+        player.x = CELL_SIZE * 10.5;
+        player.z = CELL_SIZE * 3.5;
+    } else {
+        player.x = CELL_SIZE * 2.5;
+        player.z = CELL_SIZE * 2.5;
+    }
     if (yawObject) {
         yawObject.position.set(player.x, 8, player.z);
     }
