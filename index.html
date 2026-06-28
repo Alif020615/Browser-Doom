@@ -22,6 +22,13 @@
             <span id="level-objective">Eliminate 8 Soldier Demons to open portal</span>
         </div>
 
+        <!-- SCORE HUD (top center) -->
+        <div id="score-hud">
+            <span id="score-label">SCORE</span>
+            <span id="score-val">0</span>
+            <span id="streak-msg"></span>
+        </div>
+
         <!-- BOSS HUD -->
         <div id="boss-hud">
             <span id="boss-name">CYBER-DEMON BOSS</span>
@@ -63,19 +70,49 @@
             </div>
         </div>
 
+        <!-- RUNE HUD (Level 4 only) -->
+        <div id="rune-hud">
+            <span>RUNE STONES</span>
+            <div>
+                <span class="rune-icon" id="rune-0"></span>
+                <span class="rune-icon" id="rune-1"></span>
+                <span class="rune-icon" id="rune-2"></span>
+            </div>
+        </div>
+
         <!-- SCREEN OVERLAYS -->
         <div id="item-flash"></div>
+        <div id="kill-flash"></div>
 
+        <!-- LEVEL INTRO CINEMATIC -->
+        <div id="level-intro">
+            <span id="level-intro-title"></span>
+            <span id="level-intro-sub"></span>
+        </div>
+
+        <!-- START SCREEN -->
         <div id="start-screen">
             <h1 id="menu-title">DOOM.JS</h1>
             <p>WASD to Move &bull; Mouse to Aim &bull; Click to Shoot</p>
-            <p style="color: #ff5555; font-size: 11px; margin-top: 5px;">E or Space to Open Doors/Use &bull; 1 to 4 to Change Weapons</p>
-            <p style="color: #888888; font-size: 9px; margin-top: 10px;">(Weapons: 1 Fist, 2 Pistol, 3 Shotgun, 4 Plasma)</p>
-            
+            <p style="color: #ff5555; font-size: 11px; margin-top: 5px;">E or Space to Open Doors/Use &bull; 1–5 to Change Weapons</p>
+            <p style="color: #888888; font-size: 9px; margin-top: 5px;">(Weapons: 1 Fist, 2 Pistol, 3 Shotgun, 4 Plasma, 5 Rocket)</p>
+
+            <!-- DIFFICULTY SELECTOR -->
+            <div id="difficulty-container">
+                <span class="diff-label">SELECT DIFFICULTY:</span>
+                <div id="diff-buttons">
+                    <button class="btn diff-btn" id="diff-easy" onclick="setDifficulty('easy')">EASY</button>
+                    <button class="btn diff-btn active" id="diff-normal" onclick="setDifficulty('normal')">NORMAL</button>
+                    <button class="btn diff-btn" id="diff-hard" onclick="setDifficulty('hard')">HARD</button>
+                </div>
+            </div>
+
             <div class="upload-container">
                 <span class="upload-label">UPLOAD CUSTOM ENEMY FACE (Optional):</span>
                 <input type="file" id="custom-enemy-input" accept="image/*">
             </div>
+
+            <div id="best-score-display"></div>
 
             <button class="btn" id="start-btn">ENTER HELL</button>
         </div>
@@ -83,19 +120,75 @@
         <div id="game-over">
             <h1>YOU DIED</h1>
             <p>The demons have consumed you.</p>
-            <button class="btn" onclick="location.reload()">RESPAWN</button>
+            <div id="game-over-stats"></div>
+            <button class="btn" onclick="respawn()">RESPAWN</button>
         </div>
 
         <div id="level-win">
-            <h1 style="color: #55ff55;">LEVEL COMPLETED!</h1>
-            <p>You found the exit elevator and escaped hell.</p>
+            <h1 style="color: #55ff55;">VICTORY!</h1>
+            <p id="win-message">You escaped the nightmare.</p>
+            <div id="win-stats"></div>
             <button class="btn" onclick="location.reload()">PLAY AGAIN</button>
+        </div>
+
+        <!-- CRAFTING OVERLAY -->
+        <div id="crafting-overlay">
+            <h1 style="color: #ff3333; text-shadow: 0 0 8px #ff0000; font-size: 24px;">HELL WORKBENCH</h1>
+            <p style="color: #888; font-size: 10px; margin-bottom: 20px;">[PRESS C OR I TO CLOSE & RESUME]</p>
+            
+            <div id="crafting-layout">
+                <!-- Recipe Cards List -->
+                <div id="recipe-list">
+                    <div class="recipe-card" id="recipe-shotgun">
+                        <div class="recipe-title">SHOTGUN</div>
+                        <div class="recipe-cost">Cost: 3 Scrap, 1 Fuel</div>
+                        <button class="btn craft-btn" onclick="craftItem('shotgun')">CRAFT</button>
+                    </div>
+                    <div class="recipe-card" id="recipe-plasma">
+                        <div class="recipe-title">PLASMA RIFLE</div>
+                        <div class="recipe-cost">Cost: 2 Scrap, 2 Cores</div>
+                        <button class="btn craft-btn" onclick="craftItem('plasma')">CRAFT</button>
+                    </div>
+                    <div class="recipe-card" id="recipe-rocket">
+                        <div class="recipe-title">ROCKET LAUNCHER</div>
+                        <div class="recipe-cost">Cost: 4 Scrap, 2 Fuel</div>
+                        <button class="btn craft-btn" onclick="craftItem('rocket')">CRAFT</button>
+                    </div>
+                    <div class="recipe-card" id="recipe-medkit">
+                        <div class="recipe-title">MEGA MEDKIT (100% HP)</div>
+                        <div class="recipe-cost">Cost: 1 Scrap, 1 Core</div>
+                        <button class="btn craft-btn" onclick="craftItem('medkit')">CRAFT</button>
+                    </div>
+                    <div class="recipe-card" id="recipe-armor">
+                        <div class="recipe-title">MEGA ARMOR (100% AP)</div>
+                        <div class="recipe-cost">Cost: 2 Scrap, 1 Core</div>
+                        <button class="btn craft-btn" onclick="craftItem('armor')">CRAFT</button>
+                    </div>
+                </div>
+
+                <!-- Current Materials Status Box -->
+                <div id="materials-box">
+                    <h2 style="font-size: 13px; color: #ffbb00; margin-bottom: 15px;">MATERIALS</h2>
+                    <div class="material-row">
+                        <span>SCRAP METAL:</span>
+                        <span id="mat-scrap" style="color: #fff;">0</span>
+                    </div>
+                    <div class="material-row">
+                        <span>ENERGY CORES:</span>
+                        <span id="mat-cores" style="color: #00ffff;">0</span>
+                    </div>
+                    <div class="material-row">
+                        <span>UNSTABLE FUEL:</span>
+                        <span id="mat-fuel" style="color: #ff5500;">0</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- THREE.JS ENGINE -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- GAME LOGIC -->
-    <script src="script.js?v=10"></script>
+    <script src="script.js?v=16"></script>
 </body>
 </html>
